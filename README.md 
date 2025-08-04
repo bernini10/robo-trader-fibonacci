@@ -1,0 +1,118 @@
+# Robô Analisador de Fibonacci para Criptomoedas
+
+##  Visão Geral
+
+Este projeto é um sistema completo e autônomo para análise técnica do mercado de criptomoedas, focado em estratégias de Retração e Extensão de Fibonacci. O robô monitora continuamente os pares de maior volume na Binance, identifica oportunidades de trading de alta probabilidade e envia alertas detalhados em tempo real para o Telegram.
+
+O sistema é totalmente containerizado com Docker e inclui um ecossistema de monitoramento profissional com Prometheus e Grafana, fornecendo um dashboard visual para acompanhar a saúde e o desempenho do robô.
+
+---
+
+## Funcionalidades Principais
+
+- **Análise Automatizada 24/7:** O robô busca os 50 pares de maior volume na Binance e os analisa em múltiplos timeframes (15m, 1h, 4h).
+- **Estratégia de Fibonacci:** Identifica topos e fundos significativos para traçar níveis de retração (0.382, 0.500, 0.618) e calcular potenciais pontos de entrada.
+- **Sistema de Pontuação (Scoring):** Classifica cada oportunidade com uma "chance de acerto" em porcentagem, baseada em fatores como o nível de Fibo, volume no pivô e confluência entre timeframes.
+- **Alertas Detalhados no Telegram:** Envia notificações instantâneas para um chat do Telegram, incluindo:
+  - Par e timeframe.
+  - Direção (Compra/Venda).
+  - Preço de entrada, alvos de Take Profit (TP) e Stop Loss (SL).
+  - **Relação Risco/Recompensa em %** para cada alvo.
+- **Dashboard de Monitoramento Profissional:**
+  - Construído com **Grafana** e **Prometheus**.
+  - Visualiza em tempo real métricas como: Alertas Enviados, Oportunidades Atuais, Erros Críticos e Taxa de Análise.
+- **Arquitetura Robusta:** Totalmente orquestrado com **Docker Compose**, garantindo fácil instalação e portabilidade.
+
+---
+
+## Estrutura do Projeto
+
+Analisador/
+├── .env                  # Arquivo para credenciais (NÃO ENVIAR PARA O GITHUB)
+├── .dockerignore         # Especifica arquivos a serem ignorados pelo Docker
+├── .gitignore            # Especifica arquivos a serem ignorados pelo Git
+├── Dockerfile            # Instruções para construir a imagem do robô
+├── docker-compose.yml    # Orquestra os serviços (robô, prometheus, grafana)
+├── main.py               # O código principal do robô em Python
+├── prometheus/
+│   └── prometheus.yml    # Arquivo de configuração do Prometheus
+└── requirements.txt      # Dependências do Python
+
+---
+
+## Guia de Instalação e Execução
+
+### Pré-requisitos
+
+- [Docker](https://www.docker.com/products/docker-desktop/ ) instalado e em execução.
+- Um Bot do Telegram e seu respectivo Token (obtido com o [@BotFather](https://t.me/BotFather )).
+- O ID do seu chat do Telegram (obtido com o [@userinfobot](https://t.me/userinfobot )).
+
+### Passos para Execução
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/bernini10/NOME-DO-SEU-REPOSITORIO.git
+    cd NOME-DO-SEU-REPOSITORIO
+    ```
+
+2.  **Crie o arquivo de credenciais:**
+    Crie um arquivo chamado `.env` na raiz do projeto e adicione suas credenciais:
+    ```
+    TELEGRAM_TOKEN=SEU_TOKEN_AQUI
+    TELEGRAM_CHAT_ID=SEU_CHAT_ID_AQUI
+    ```
+
+3.  **(Apenas para macOS ) Limpe os metadados:**
+    Antes de construir a imagem, execute este comando para evitar erros de permissão:
+    ```bash
+    dot_clean .
+    ```
+
+4.  **Inicie o sistema completo:**
+    Use o Docker Compose para construir as imagens e iniciar todos os containers:
+    ```bash
+    docker compose up --build
+    ```
+    Para rodar em segundo plano (detached mode), use:
+    ```bash
+    docker compose up --build -d
+    ```
+
+5.  **Acesse o Grafana:**
+    - Abra seu navegador e acesse `http://localhost:3000`.
+    - Faça login com `admin` / `admin` (e defina uma nova senha ).
+    - Configure a fonte de dados Prometheus (`http://prometheus:9090` ) e crie seu dashboard.
+
+---
+
+## Próximas Etapas e Evolução
+
+Este projeto serve como uma base sólida para muitas evoluções futuras:
+
+- **Criar um Bot de Operações na Bybit:**
+  - **Objetivo:** Transformar os alertas em operações reais.
+  - **Passos:**
+    1.  Estudar a API da Bybit (biblioteca `pybit`).
+    2.  Adicionar as chaves de API da Bybit ao arquivo `.env`.
+    3.  Criar uma nova função no `main.py` para `executar_ordem(par, tipo, preco_entrada, tp, sl)`.
+    4.  Adicionar uma variável de ambiente (ex: `MODO_OPERACAO=ATIVO`) para decidir se o robô apenas envia alertas ou se também executa ordens.
+
+- **Evoluir o Dashboard do Grafana:**
+  - **Objetivo:** Ter uma visão mais detalhada do desempenho.
+  - **Passos:**
+    1.  Adicionar métricas para P/L (Profit/Loss) de operações fechadas.
+    2.  Criar um painel para visualizar a taxa de acerto por timeframe ou por par.
+    3.  Configurar alertas diretamente no Grafana (ex: se o número de erros críticos for > 0).
+
+- **Adicionar Mais Estratégias:**
+  - **Objetivo:** Aumentar a diversidade de sinais.
+  - **Passos:**
+    1.  Implementar análises baseadas em outros indicadores (Médias Móveis, IFR, Bandas de Bollinger).
+    2.  Adicionar a detecção de padrões de candlestick (Engolfo, Martelo) como um fator de confirmação no `scoring`.
+
+- **Refinar o Gerenciamento de Risco:**
+  - **Objetivo:** Tornar as operações mais seguras.
+  - **Passos:**
+    1.  Calcular o tamanho da posição dinamicamente com base em um risco fixo (ex: 1% do capital por operação).
+    2.  Implementar um trailing stop para proteger os lucros.

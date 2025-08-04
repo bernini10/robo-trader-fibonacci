@@ -1,0 +1,18 @@
+# .dockerignore
+
+# Ignorar arquivos de metadados do macOS
+._*
+.DS_Store
+
+# Ignorar arquivos do Git
+.git
+.gitignore
+
+# Ignorar ambientes virtuais do Python
+venv
+*.pyc
+__pycache__
+
+# Ignorar arquivos de configuração de IDEs
+.vscode/
+.idea/

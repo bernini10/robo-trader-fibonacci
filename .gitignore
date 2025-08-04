@@ -1,0 +1,17 @@
+# Arquivo para ignorar arquivos e pastas do Git
+
+# Credenciais
+.env
+
+# Arquivos de cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de metadados do macOS
+.DS_Store
+._*
+
+# Dados do Grafana (se o volume for mapeado localmente)
+grafana-data/
