@@ -1,0 +1,32 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": { "list": [ { "builtIn": 1, "datasource": { "type": "grafana", "uid": "-- Grafana --" }, "enable": true, "hide": true, "iconColor": "rgba(0, 211, 255, 1)", "name": "Annotations & Alerts", "type": "dashboard" } ] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    { "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 }, "id": 4, "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" }, "pluginVersion": "12.1.0", "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "fib_oportunidades_imediatas_atuais", "instant": true, "legendFormat": "__auto", "range": true, "refId": "A" } ], "title": "Oportunidades Atuais", "type": "gauge" },
+    { "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }, "id": 2, "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" }, "pluginVersion": "12.1.0", "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "fib_alertas_enviados_total", "instant": true, "legendFormat": "__auto", "range": true, "refId": "A" } ], "title": "Total de Alertas Enviados", "type": "stat" },
+    { "gridPos": { "h": 4, "w": 6, "x": 0, "y": 4 }, "id": 6, "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" }, "pluginVersion": "12.1.0", "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "fib_erros_criticos_total", "instant": true, "legendFormat": "__auto", "range": true, "refId": "A" } ], "title": "Erros Críticos", "type": "stat" },
+    { "gridPos": { "h": 4, "w": 6, "x": 6, "y": 4 }, "id": 8, "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "single", "sort": "none" } }, "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "rate(fib_ciclos_analise_total[5m])", "legendFormat": "Ciclos por minuto", "range": true, "refId": "A" } ], "title": "Taxa de Análise", "type": "timeseries" },
+    { "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }, "id": 12, "options": { "showHeader": true }, "pluginVersion": "12.1.0", "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "fib_alerta_detalhes", "format": "table", "instant": true, "refId": "A" } ], "title": "Últimos Alertas Detalhados", "type": "table" },
+    { "gridPos": { "h": 16, "w": 24, "x": 0, "y": 8 }, "id": 10, "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true }, "targets": [ { "datasource": { "type": "loki", "uid": "Loki" }, "editorMode": "code", "expr": "{container=\"fib-scanner\"}", "refId": "A" } ], "title": "Logs do Robô em Tempo Real", "type": "logs" },
+    { "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 }, "id": 14, "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" }, "pluginVersion": "12.1.0", "targets": [ { "datasource": { "type": "prometheus", "uid": "Prometheus" }, "editorMode": "code", "expr": "fib_pares_monitorados", "instant": true, "legendFormat": "{{pares}}", "range": true, "refId": "A" } ], "title": "Pares Monitorados", "type": "stat" }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": [],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Monitor do Robô Fibonacci",
+  "uid": "robo-fib-monitor",
+  "version": 5,
+  "weekStart": ""
+}

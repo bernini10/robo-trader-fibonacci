@@ -1,7 +1,8 @@
+# prometheus/prometheus.yml (Versão Corrigida)
 global:
-  scrape_interval: 15s # A cada 15 segundos, o Prometheus vai coletar as métricas
+  scrape_interval: 15s
 
 scrape_configs:
   - job_name: 'fib-scanner'
     static_configs:
-      - targets: ['fib-scanner:8000'] # O nome do serviço e a porta que definimos no nosso robô
+      - targets: ['fib-scanner:8000'] # <-- CORREÇÃO CRUCIAL AQUI
