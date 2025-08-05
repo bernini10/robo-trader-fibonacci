@@ -1,34 +1,43 @@
-version: '3.8'
+# docker-compose.yml (Versão com persistência de dados para o Grafana)
 
 services:
+  # Serviço do Robô Analisador
   fib-scanner:
     build: .
     container_name: fib-scanner
+    restart: unless-stopped
     environment:
-      # IMPORTANTE: Substitua pelos seus valores aqui ou use um arquivo .env
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
-    restart: unless-stopped
+    ports:
+      - "8000:8000" # Expõe a porta para o Prometheus
 
+  # Serviço do Prometheus para coletar métricas
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    restart: unless-stopped
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./prometheus:/etc/prometheus/
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - "9090:9090"
-    restart: unless-stopped
+    depends_on:
+      - fib-scanner
 
+  # Serviço do Grafana para visualizar os dados
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana:latest
     container_name: grafana
+    restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
-      - grafana-data:/var/lib/grafana
-    restart: unless-stopped
+      - grafana-data:/var/lib/grafana # <-- LINHA ADICIONADA PARA PERSISTÊNCIA
+    depends_on:
+      - prometheus
 
+# Definição do volume nomeado para o Grafana
 volumes:
-  grafana-data:
+  grafana-data: # <-- SEÇÃO ADICIONADA PARA CRIAR O VOLUME
