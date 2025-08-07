@@ -1,5 +1,6 @@
-python-binance
 pandas
-numpy
+numpy==1.23.5
+python-binance
 python-telegram-bot
-prometheus_client
+prometheus-client
+pandas-ta
