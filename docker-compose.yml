@@ -1,16 +1,39 @@
+# docker-compose.yml (Versão 3.0 - Final e Integrada)
 version: '3.8'
 
 services:
-  fib-scanner:
+  robot:
     build: .
-    container_name: fib-scanner
-    environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
-      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+    container_name: trading_robot
     restart: unless-stopped
-    labels:
-      - "logging=promtail"
-    networks: # <-- ADICIONADO
+    env_file:
+      - .env  # Carrega as variáveis do .env de forma segura
+    volumes:
+      - ./logs:/app/logs  # Mapeia a pasta de logs para o host E para o container
+    networks:
+      - monitor-net
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - ./logs:/var/log/robot  # Mapeia a pasta de logs do host para o Promtail ler
+      - ./promtail-config.yml:/etc/promtail/config.yml # Mapeia o arquivo de configuração do Promtail
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitor-net
+    depends_on:
+      - robot # Garante que o robô inicie antes do Promtail
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
       - monitor-net
 
   prometheus:
@@ -23,7 +46,7 @@ services:
     ports:
       - "9090:9090"
     restart: unless-stopped
-    networks: # <-- ADICIONADO
+    networks:
       - monitor-net
 
   grafana:
@@ -35,33 +58,12 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
-    networks: # <-- ADICIONADO
-      - monitor-net
-
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    command: -config.file=/etc/loki/local-config.yaml
-    ports:
-      - "3100:3100"
-    restart: unless-stopped
-    networks: # <-- ADICIONADO
-      - monitor-net
-
-  promtail:
-    image: grafana/promtail:latest
-    container_name: promtail
-    volumes:
-      - ./promtail:/etc/promtail
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: -config.file=/etc/promtail/config.yml
-    restart: unless-stopped
-    networks: # <-- ADICIONADO
+    networks:
       - monitor-net
 
 volumes:
   grafana-data:
 
-networks: # <-- SEÇÃO INTEIRA ADICIONADA
+networks:
   monitor-net:
     driver: bridge

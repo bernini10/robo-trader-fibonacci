@@ -15,3 +15,8 @@ __pycache__/
 
 # Dados do Grafana (se o volume for mapeado localmente)
 grafana-data/
+# Arquivos de ambiente e segredos
+.env
+
+# Pasta de logs
+logs/

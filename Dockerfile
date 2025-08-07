@@ -1,23 +1,22 @@
-# Dockerfile
+# Dockerfile (Versão 3.0 - Caminho de Execução Corrigido)
 
-# 1. Usar uma imagem base oficial do Python
 FROM python:3.9-slim
 
-# 2. <<< ADICIONAR ESTA LINHA >>>
-# Força o Python a imprimir logs em tempo real, sem buffer
-ENV PYTHONUNBUFFERED=1
-
-# 3. Definir o diretório de trabalho dentro do container
+# Define o diretório de trabalho
 WORKDIR /app
 
-# 4. Copiar o arquivo de requisitos para o diretório de trabalho
+# Copia o arquivo de dependências primeiro para aproveitar o cache do Docker
 COPY requirements.txt .
-
-# 5. Instalar as dependências listadas no requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copiar o resto dos arquivos do projeto
-COPY . .
+# Copia todo o código fonte para o container
+# Isso cria a estrutura /app/src/...
+COPY src/ ./src
 
-# 7. Definir o comando que será executado quando o container iniciar
-CMD ["python", "main.py"]
+# Copia os arquivos de log para garantir que a pasta exista
+# Isso cria a estrutura /app/logs/...
+COPY logs/ ./logs
+
+# Comando para iniciar o robô, usando o caminho correto
+# O '-m' diz ao Python para rodar o módulo 'src.main'
+CMD ["python", "-m", "src.main"]
