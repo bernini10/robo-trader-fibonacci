@@ -15,7 +15,6 @@ COPY src/ ./src
 
 # Copia os arquivos de log para garantir que a pasta exista
 # Isso cria a estrutura /app/logs/...
-COPY logs/ ./logs
 
 # Comando para iniciar o robô, usando o caminho correto
 # O '-m' diz ao Python para rodar o módulo 'src.main'
